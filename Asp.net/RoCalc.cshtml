@@ -1,0 +1,264 @@
+﻿@{
+    string result = null;
+    string result_style = null;
+    if (IsPost)
+    {
+        List<string> errors = new List<string>();
+        double Model = GetValue(Request.Form["Model"], errors);
+        double zyd = GetValue(Request.Form["zyd"], errors);
+        double SDI = GetValue(Request.Form["SDI"], errors);
+        double dd = GetValue(Request.Form["dd"], errors);
+        double PH = GetValue(Request.Form["PH"], errors);
+        double COD = GetValue(Request.Form["COD"], errors);
+        double ca = GetValue(Request.Form["ca"], errors);
+        double co3 = GetValue(Request.Form["co3"], errors);
+        double mg = GetValue(Request.Form["mg"], errors);
+        double hco = GetValue(Request.Form["hco"], errors);
+        double na = GetValue(Request.Form["na"], errors);
+        double so4 = GetValue(Request.Form["so4"], errors);
+        double k = GetValue(Request.Form["k"], errors);
+        double cl = GetValue(Request.Form["cl"], errors);
+        double ba = GetValue(Request.Form["ba"], errors);
+        double cl02 = GetValue(Request.Form["cl02"], errors);
+        double sr = GetValue(Request.Form["sr"], errors);
+        double f = GetValue(Request.Form["f"], errors);
+        double fe = GetValue(Request.Form["fe"], errors);
+        double no3 = GetValue(Request.Form["no3"], errors);
+        double al = GetValue(Request.Form["al"], errors);
+        double sio = GetValue(Request.Form["sio"], errors);
+        double mn = GetValue(Request.Form["mn"], errors);
+        double nh = GetValue(Request.Form["nh"], errors);
+
+        if (errors.Count > 0)
+        {
+            result = "<br />" + string.Join("<br />", errors);
+            result_style = "class=\"error\"";
+        }
+        else
+        {
+            double item1 = zyd / Model;
+            double item2 = SDI / 10 + dd / 10 + PH / 100 + COD / 100;
+            double item3 = ca / 100 + mg / 100 + na / 2000 + k / 100 + ba / 100 + sr / 100 + fe / 10 + al / 100 + mn / 100 + nh / 100;
+            double item4 = co3 / 1000 + hco / 1000 + so4 / 1000 + cl / 50 + cl02 / 1000 + f / 50 + no3 / 50 + sio / 50;
+
+            if (item1 > 4) { item1 = 4; }
+            if (item2 > 2) { item2 = 2; }
+            if (item3 > 1) { item3 = 1; }
+            if (item4 > 1) { item4 = 1; }
+
+            double total = item1 + item2 + item3 + item4;
+            result = string.Format("投药量为: {0}mg/L", total);
+        }
+    } 
+}
+@functions {
+    public static double GetValue(string text, List<string> errors)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return 0;
+        }
+        double value;
+        bool good = double.TryParse(text.Trim(), out value);
+        if (!good)
+        {
+            errors.Add(text + "不是一个有效的数字");
+        }
+        return value;
+    }
+
+    public string GetParam(string name)
+    {
+        string value = Request.Form[name];
+        if (string.IsNullOrEmpty(value))
+        {
+            return "0";
+        }
+        else
+        {
+            return value;
+        }
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>阻垢剂计算器</title>
+    <style>
+    .tbl {
+        border-collapse: collapse;
+        border-color: #0d6ab8;
+        border-width: 2px;
+    }
+
+    .btn {
+        padding: 5px 10px 4px 10px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .tbl td, th {
+        background-color: #f6fafd;
+        white-space: nowrap;
+        padding: 4px;
+        border-color: #0d6ab8;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+</head>
+<body>
+    <form method="post">
+    <table border="1" align="center" class="tbl">
+        <thead>
+            <tr>
+                <th colspan="4">派诺特 - 阻垢剂计算器</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span>型号</span></td>
+                <td>@Html.DropDownList("Model", new List<SelectListItem>
+                    {
+                        new SelectListItem{ Text="PNT210", Value="200", Selected = GetParam("Model")=="200" },
+                        new SelectListItem{ Text="PNT220", Value="400", Selected = GetParam("Model")=="400" },
+                        new SelectListItem{ Text="PNT240", Value="300", Selected = GetParam("Model")=="300" },
+                        new SelectListItem{ Text="PNT250", Value="200.0", Selected = GetParam("Model")=="200.0" },
+                    })
+                </td>
+                <td>总硬度</td>
+                <td>
+                    @Html.TextBox("zyd", GetParam("zyd"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td><span>SDI</span></td>
+                <td>
+                    @Html.TextBox("SDI", GetParam("SDI"), new { size = "12" })
+                    mg/L </td>
+                <td><span>浊度</span></td>
+                <td>
+                    @Html.TextBox("dd", GetParam("dd"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td><span>PH</span></td>
+                <td>
+                    @Html.TextBox("PH", GetParam("PH"), new { size = "12" })
+                    mg/L </td>
+                <td><span>COD</span></td>
+                <td>
+                    @Html.TextBox("COD", GetParam("COD"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <th colspan="2">阳离子</th>
+                <th colspan="2">阴离子</th>
+            </tr>
+            <tr>
+                <td><span>钙 (Ca<sup>2+</sup>)</span></td>
+                <td>
+                    @Html.TextBox("ca", GetParam("ca"), new { size = "12" })
+                    mg/L </td>
+                <td><span>碳酸根 (CO<sub>3</sub><sup>2-</sup>)</span></td>
+                <td>
+                    @Html.TextBox("co3", GetParam("co3"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td><span>镁 (Mg<sup>2+</sup>)</span></td>
+                <td>
+                    @Html.TextBox("mg", GetParam("mg"), new { size = "12" })
+                    mg/L </td>
+                <td><span>重碳酸盐 (HCO<sub>3</sub><sup>-</sup>) </span></td>
+                <td>
+                    @Html.TextBox("hco", GetParam("hco"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td>钠 (Na<sup>+</sup>) </td>
+                <td>
+                    @Html.TextBox("na", GetParam("na"), new { size = "12" })
+                    mg/L </td>
+                <td><span>硫酸盐 (SO<sub>4</sub><sup>2-</sup>)</span></td>
+                <td>
+                    @Html.TextBox("so4", GetParam("so4"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td>钾 (K<sup>+</sup>)</td>
+                <td>
+                    @Html.TextBox("k", GetParam("k"), new { size = "12" })
+                    mg/L </td>
+                <td><span>余氯 (Cl<sup>2</sup>)</span></td>
+                <td>
+                    @Html.TextBox("cl", GetParam("cl"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td><span>钡 (Ba<sup>2+</sup>)</span></td>
+                <td>
+                    @Html.TextBox("ba", GetParam("ba"), new { size = "12" })
+                    mg/L </td>
+                <td>氯化物 (Cl<sup>-</sup>)</td>
+                <td>
+                    @Html.TextBox("cl02", GetParam("cl02"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td><span>锶 (Sr<sup>2+</sup>)</span></td>
+                <td>
+                    @Html.TextBox("sr", GetParam("sr"), new { size = "12" })
+                    mg/L </td>
+                <td>氟化物 (F<sup>-</sup>) </td>
+                <td>
+                    @Html.TextBox("f", GetParam("f"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td><span>铁 (Fe)</span></td>
+                <td>
+                    @Html.TextBox("fe", GetParam("fe"), new { size = "12" })
+                    mg/L </td>
+                <td>硝酸盐 (NO<sup>3-</sup>)</td>
+                <td>
+                    @Html.TextBox("no3", GetParam("no3"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td>铝 (Al<sup>3+</sup>) </td>
+                <td>
+                    @Html.TextBox("al", GetParam("al"), new { size = "12" })
+                    mg/L </td>
+                <td>硅 (SiO<sub>2</sub>)</td>
+                <td>
+                    @Html.TextBox("sio", GetParam("sio"), new { size = "12" })
+                    mg/L </td>
+            </tr>
+            <tr>
+                <td>锰 (Mn<sup>4+</sup>) </td>
+                <td>
+                    @Html.TextBox("mn", GetParam("mn"), new { size = "12" })
+                    mg/L </td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td>氨根 (NH<sup>4+</sup>) </td>
+                <td>
+                    @Html.TextBox("nh", GetParam("nh"), new { size = "12" })
+                    mg/L </td>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <input type="submit" class="btn" value="计算" />
+                    <span @Html.Raw(result_style)>@Html.Raw(result)</span></td>
+            </tr>
+        </tbody>
+    </table>
+    </form>
+</body>
+</html>
