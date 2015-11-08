@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>阻垢剂加药量计算器</title>
+<link rel="stylesheet" href="potionmixer.css">
+</head>
+<body>
+  <h1>阻垢剂加药量计算器</h1>
+
+  <p>
+    用<em>*</em>标注的为必填项，用<b>*</b>标注的二者选填其一。
+  </p>
+
+  <div id="sample_container_id">
+    <table>
+      <tr>
+        <td><label><em>*</em> 设备进水流量（T/h）：</label></td>
+        <td><input id="warter_input" type="text" /><span class="error"></span></td>
+      </tr>
+      <tr>
+        <td><label><em>*</em> 推荐加药剂量（g/T）：</label></td>
+        <td><input id="potion_ppm" type="text" /><span class="error"></span></td>
+      </tr>
+      <tr>
+        <td><label> 药剂注入量（g/h）：</label></td>
+        <td><input id="potion_input" type="text" readonly disabled /></td>
+      </tr>
+      <tr>
+        <td><label><b>*</b> 药剂标准液用量（kg）：</label></td>
+        <td><input id="potion_dose" type="text" /><span class="error"></span></td>
+      </tr>
+      <tr>
+        <td><label><em>*</em>所需配制的药液体积（L）：</label></td>
+        <td><input id="potion_volumn" type="text" /><span class="error"></span></td>
+      </tr>
+      <tr>
+        <td><label> 药液浓度（g/L）：</label></td>
+        <td><input id="potion_concentration" type="text" readonly disabled /></td>
+      </tr>
+      <tr>
+        <td><label>计量泵实际流量（L/h）：</label></td>
+        <td><input id="pump_flow" type="text" readonly disabled /></td>
+      </tr>
+      <tr>
+        <td><label><em>*</em> 计量泵最大流量（L/h）：</label></td>
+        <td><input id="pump_max_flow" type="text" /><span class="error"></span></td>
+      </tr>
+      <tr>
+        <td><label><b>*</b> 计量泵刻度（%）：</label></td>
+        <td><input id="pump_scale" type="text" /><span class="error"></span></td>
+      </tr>
+    </table>
+    <button id="btnCalc">计算</button>
+  </div>
+
+  <script type="application/dart" src="potionmixer.dart"></script>
+  <script src="packages/browser/dart.js"></script>
+</body>
+</html>

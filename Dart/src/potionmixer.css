@@ -1,0 +1,47 @@
+
+body {
+  background-color: #F8F8F8;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.2em;
+  margin: 15px;
+}
+
+h1, p {
+  color: #333;
+}
+
+em{
+  color: #f00;
+}
+b{
+  color: #00f;
+}
+i{
+  color: #f0f;
+}
+
+label{
+  white-space: nowrap;
+}
+
+.error{
+  color: #f00;
+}
+
+#sample_container_id {
+  width: 38em;
+  height: 22em;
+  position: relative;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 1em;
+}
+
+#btnCalc {
+  font-size: 14pt;
+  padding: 0.1em 1em;
+  margin-top: 0.5em;
+  margin-left: 10em;
+}
